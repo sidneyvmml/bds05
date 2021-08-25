@@ -1,9 +1,9 @@
 package com.devsuperior.movieflix.services.exceptions;
 
-public class ForbiddenException extends RuntimeException {
+public class UnauthorizedException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public ForbiddenException(String msg) {
+	public UnauthorizedException(String msg) {
 		super(msg);
 	}
 

@@ -1,9 +1,9 @@
 package com.devsuperior.movieflix.services.exceptions;
 
-public class UnAuthorizedException extends RuntimeException {
+public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public UnAuthorizedException(String msg) {
+	public DatabaseException(String msg) {
 		super(msg);
 	}
 

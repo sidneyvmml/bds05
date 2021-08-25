@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tb_review")
-public class Review implements Serializable{
+public class Review implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -32,26 +32,13 @@ public class Review implements Serializable{
 		
 	}
 
-	public Review(Long id, String text) {		
+	public Review(Long id, String text, Movie movie, User user) {
+		super();
 		this.id = id;
 		this.text = text;
-	}
-	
-	
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Movie getMovie() {
-		return movie;
-	}
-
-	public void setMovie(Movie movie) {
 		this.movie = movie;
+		this.user = user;
+		
 	}
 
 	public Long getId() {
@@ -70,9 +57,22 @@ public class Review implements Serializable{
 		this.text = text;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Movie getMovie() {
+		return movie;
+	}
+
+	public void setMovie(Movie movie) {
+		this.movie = movie;
+	}
 	
-	
-	
-	
+
 
 }

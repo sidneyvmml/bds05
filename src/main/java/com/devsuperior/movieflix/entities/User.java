@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,14 +20,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 
 @Entity
 @Table(name = "tb_user")
 public class User implements UserDetails, Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -36,14 +37,16 @@ public class User implements UserDetails, Serializable {
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_role",
-		joinColumns = @JoinColumn(name = "user_id"),
-		inverseJoinColumns = @JoinColumn(name = "role_id"))	
+		joinColumns = @JoinColumn(name = "user_id"), 
+		inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews = new ArrayList<>();
 	
+		
 	public User() {
+		
 	}
 
 	public User(Long id, String name, String email, String password) {
@@ -52,19 +55,7 @@ public class User implements UserDetails, Serializable {
 		this.name = name;
 		this.email = email;
 		this.password = password;
-	}
-
-	
-	public List<Review> getReviews() {
-		return reviews;
-	}
-
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+		
 	}
 
 	public Long getId() {
@@ -101,18 +92,20 @@ public class User implements UserDetails, Serializable {
 
 	public Set<Role> getRoles() {
 		return roles;
-	}
-
+	}	
 	
+	public List<Review> getReviews() {
+		return reviews;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -123,49 +116,51 @@ public class User implements UserDetails, Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (roles == null) {
+			if (other.roles != null)
+				return false;
+		} else if (!roles.equals(other.roles))
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
 	}
 
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+		return email;
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
-	public boolean hasRole(String roleName) {
-		for (Role role : roles) {
+	public boolean hasHole(String roleName) {
+		for(Role role : roles) {
 			if (role.getAuthority().equals(roleName)) {
 				return true;
 			}
